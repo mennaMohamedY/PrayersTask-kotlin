@@ -9,8 +9,8 @@ import retrofit2.http.Query
 interface ApiServices {
 
     @GET("v1/calendar/{year}/{month}")
-    fun getAllMonthPrayers(@Path("year") yearr: Number, @Path("month") monthh: Number, @Query("latitude") latitudee: Double,
+    suspend fun getAllMonthPrayers(@Path("year") yearr: Number, @Path("month") monthh: Number, @Query("latitude") latitudee: Double,
                            @Query("longitude") longitudee: Double
-    ):Call<PrayersResponse>
+    ):PrayersResponse
 
 }

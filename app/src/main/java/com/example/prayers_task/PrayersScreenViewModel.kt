@@ -8,10 +8,12 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.prayers_task.api.ApiManager
 import com.example.prayers_task.model.*
 import com.example.prayers_task.room.AppLocalPrayersDB
 import com.example.prayers_task.room.PrayersDC
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -25,14 +27,11 @@ class PrayersScreenViewModel :ViewModel() {
     val dataItm=MutableLiveData<DataItem>()
     var currentDate=MutableLiveData<String?>()
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun getPrayers(context: Context){
-        ApiManager.getAPIServices().getAllMonthPrayers(2024,6,31.2001,29.9187)
-            .enqueue(object :Callback<PrayersResponse>{
-            @RequiresApi(Build.VERSION_CODES.O)
-            override fun onResponse(
-                call: Call<PrayersResponse>,
-                response: Response<PrayersResponse>
-            ) {
+        viewModelScope.launch {
+            try{
+                val response=ApiManager.getAPIServices().getAllMonthPrayers(2024,6,31.2001,29.9187)
                 val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
                 showLoading.value=false
                 currentDate.value = LocalDateTime.now().format(formatter)
@@ -41,28 +40,26 @@ class PrayersScreenViewModel :ViewModel() {
                 editor.putString("CurrentDate",currentDate.value)
                 editor.commit()
 
-                response.body()?.data?.forEach {
+                response.data?.forEach {
                     if(it?.date?.gregorian?.date.equals(currentDate.value)){
                         dataItm.value=it
                     }
 
                     val dc=PrayersDC(date = it?.date?.gregorian?.date,
                         sunrise =it?.timings?.sunrise ,
-                    sunset =it?.timings?.sunset ,
-                    fajr = it?.timings?.fajr,
-                    dhuhr =it?.timings?.dhuhr ,
-                    asr =it?.timings?.asr ,
-                    maghrib =it?.timings?.maghrib ,
-                    isha = it?.timings?.isha)
+                        sunset =it?.timings?.sunset ,
+                        fajr = it?.timings?.fajr,
+                        dhuhr =it?.timings?.dhuhr ,
+                        asr =it?.timings?.asr ,
+                        maghrib =it?.timings?.maghrib ,
+                        isha = it?.timings?.isha)
                     AppLocalPrayersDB.getDB(context).prayersDAO().addPrayerDataItem(dc)
-
                 }
-            }
-            override fun onFailure(call: Call<PrayersResponse>, t: Throwable) {
+            }catch (e:Exception){
                 showLoading.value=true
-                errorMsg.value=t.localizedMessage.toString()
+                errorMsg.value=e.localizedMessage.toString()
             }
-        })
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
