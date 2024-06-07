@@ -122,32 +122,6 @@ data class Params(
 	val fajr: Double? = null
 )
 
-//data class Meta(
-//
-//	@field:SerializedName("method")
-//	val method: Method? = null,
-//
-//	@field:SerializedName("offset")
-//	val offset: Offset? = null,
-//
-//	@field:SerializedName("school")
-//	val school: String? = null,
-//
-//	@field:SerializedName("timezone")
-//	val timezone: String? = null,
-//
-//	@field:SerializedName("midnightMode")
-//	val midnightMode: String? = null,
-//
-//	@field:SerializedName("latitude")
-//	val latitude: Any? = null,
-//
-//	@field:SerializedName("longitude")
-//	val longitude: Any? = null,
-//
-//	@field:SerializedName("latitudeAdjustmentMethod")
-//	val latitudeAdjustmentMethod: String? = null
-//)
 
 data class Timings(
 
@@ -189,9 +163,6 @@ data class DataItem(
 
 	@field:SerializedName("date")
 	val date: Date? = null,
-
-//	@field:SerializedName("meta")
-//	val meta: Meta? = null,
 
 	@field:SerializedName("timings")
 	val timings: Timings? = null

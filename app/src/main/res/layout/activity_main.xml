@@ -7,7 +7,6 @@
         <variable
             name="vm"
             type="com.example.prayers_task.PrayersScreenViewModel" />
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -109,9 +108,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:id="@+id/prayersRV"/>
-        
-
-
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/innerconstraintlayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:progressBackgroundTint="@color/teal_700"
+            android:visibility="visible"
+            android:id="@+id/circularProgressIndicator"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

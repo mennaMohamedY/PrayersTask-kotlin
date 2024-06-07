@@ -23,8 +23,6 @@ class ApiManager {
            return checkInstance().create(ApiServices::class.java)
         }
 
-
-
     }
 
 }

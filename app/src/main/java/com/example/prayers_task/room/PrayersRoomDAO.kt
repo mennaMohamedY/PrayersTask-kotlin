@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.prayers_task.model.DataItem
 
 
 @Dao
@@ -15,11 +14,11 @@ interface PrayersRoomDAO {
     @Insert
     fun addPrayerDataItem(prayerDataItem: PrayersDC)
 
-    @Query("SELECT * FROM prayersPerMonth WHERE date IN (:date)")
-    fun loadCurrentDayPrayers(date: String): PrayersDC
-
     @Query("DELETE FROM prayersPerMonth")
     fun deleteAll()
 
 }
+
+//@Query("SELECT * FROM prayersPerMonth WHERE date IN (:date)")
+//fun loadCurrentDayPrayers(date: String): PrayersDC
 

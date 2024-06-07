@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.prayers_task.databinding.SinglePrayerDesignBinding
 import com.example.prayers_task.model.DataItem
-import com.example.prayers_task.model.PrayersResponse
 
 class PrayersAdapter(var prayersList:DataItem?) :Adapter<PrayersAdapter.PrayersViewHolder>(){
 
@@ -14,11 +13,8 @@ class PrayersAdapter(var prayersList:DataItem?) :Adapter<PrayersAdapter.PrayersV
         this.prayersList=prayersList
         notifyDataSetChanged()
     }
-    class PrayersViewHolder(var prayersBinding:SinglePrayerDesignBinding):ViewHolder(prayersBinding.root){
-//        fun bind(dataItem: DataItem){
-//            prayersBinding.dataitm=dataItem
-//        }
-    }
+    class PrayersViewHolder(var prayersBinding:SinglePrayerDesignBinding):ViewHolder(prayersBinding.root)
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PrayersViewHolder {
         val prayersBinding=SinglePrayerDesignBinding.inflate(LayoutInflater.from(parent.context),parent,false)
