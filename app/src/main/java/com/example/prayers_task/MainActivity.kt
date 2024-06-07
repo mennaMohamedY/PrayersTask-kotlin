@@ -4,11 +4,14 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.prayers_task.adater.PrayersAdapter
 import com.example.prayers_task.databinding.ActivityMainBinding
+import com.google.android.material.navigation.NavigationBarView.OnItemSelectedListener
 
 
 class MainActivity : AppCompatActivity() {
@@ -19,6 +22,7 @@ class MainActivity : AppCompatActivity() {
 
 
     var sharedPreferencesTime:String?=null
+    lateinit var spinnerList:List<String>
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,6 +32,9 @@ class MainActivity : AppCompatActivity() {
         vm=ViewModelProvider(this).get(PrayersScreenViewModel::class.java)
         prayersAdapter=PrayersAdapter(null)
         prayersActivityBinding.prayersRV.adapter=prayersAdapter
+        initSpinnerList()
+        prayersActivityBinding.spinner.adapter=ArrayAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,spinnerList)
+
 
         val PrayersSP= applicationContext.getSharedPreferences("PrayersApp", MODE_PRIVATE)
         sharedPreferencesTime=PrayersSP.getString("CurrentDate","")
@@ -64,6 +71,20 @@ class MainActivity : AppCompatActivity() {
                 prayersActivityBinding.circularProgressIndicator.visibility=View.INVISIBLE
             }
         }
+    }
+
+    fun initSpinnerList(){
+        spinnerList= arrayListOf(
+            "1- جامعه العلوم الاسلاميه",
+            "2- الجمعيه الاسلاميه لامريكا الشماليه",
+            "3- رابطه العالم الاسلامي",
+            "4- جامعه ام القري بمكه المكرمه",
+            "5- الهيئه المصريه العامه للمساحه",
+            " 6 -الكويت",
+            "  7 -قطر",
+        )
+
+
     }
 
 
