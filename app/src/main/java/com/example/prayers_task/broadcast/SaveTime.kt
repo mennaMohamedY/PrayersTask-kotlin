@@ -68,7 +68,7 @@ class SaveTime {
         hourPart=m?.get(0)!!.toInt()
         minutesPart=m?.get(1)!!.toInt()
         println("FullTime->${fullTime}: hourPart->${hourPart}: minutesPart:${minutesPart}")
-        Toast.makeText(context, "time is set  FullTime->${fullTime}: hourPart->${hourPart}: minutesPart:${minutesPart}", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(context, "time is set  FullTime->${fullTime}: hourPart->${hourPart}: minutesPart:${minutesPart}", Toast.LENGTH_SHORT).show()
     }
 
     fun getAllDataFromRoom(){

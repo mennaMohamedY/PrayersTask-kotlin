@@ -125,6 +125,9 @@ class MainActivity : AppCompatActivity() {
             }
             onTryAgainClickListener()
         }else{
+            if(latitude==0.0 || longtitude == 0.0){
+                getCurrentLocationFun()
+            }
             //get the data from room db
             //we need to pass the current day
             vm.showDataFromRoomDB( this,vm.theCurrentDate.value!!)
