@@ -1,4 +1,5 @@
 features
+
 1-set alarms when we click on the button will creat notification channel and check for permission to send notifications
 
 2-check on the internet connection if it’s not connected then an error message will occur and a retry btn
