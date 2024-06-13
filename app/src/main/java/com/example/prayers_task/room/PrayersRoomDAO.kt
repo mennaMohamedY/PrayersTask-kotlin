@@ -17,6 +17,10 @@ interface PrayersRoomDAO {
     @Query("DELETE FROM prayersPerMonth")
     fun deleteAll()
 
+    @Query("SELECT * FROM prayersPerMonth WHERE prayer_day >= :currentDay")
+    fun getPrayersFromCurrentDateTillMonthEnd(currentDay:Int):List<PrayersDC>
+
+
 }
 
 //@Query("SELECT * FROM prayersPerMonth WHERE date IN (:date)")

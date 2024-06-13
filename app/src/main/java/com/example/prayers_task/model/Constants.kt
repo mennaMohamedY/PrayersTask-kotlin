@@ -12,6 +12,7 @@ class Constants{
         val sharedPrefName:String="PrayersApp"
         val longitude="longitude"
         val latitude="latitude"
+        val setPrayerAlarmChecked="setPrayerAlarmChecked"
     }
 
 }

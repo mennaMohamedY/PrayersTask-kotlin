@@ -75,6 +75,12 @@ class MainActivity : AppCompatActivity() {
         vm.getCurrentDate()
         //to get notification at prayerTimes
         createNotification()
+        PrayersSP= applicationContext.getSharedPreferences("PrayersApp", MODE_PRIVATE)
+        val checked=PrayersSP.getBoolean(Constants.setPrayerAlarmChecked,false)
+        if(checked){
+            prayersActivityBinding.setAlarm.setImageResource(R.drawable.ic_box_checked)
+        }
+
 
         saveTime=SaveTime(applicationContext)
 //        Toast.makeText(this, "Saved time in sharedPreferences ${saveTime.getHour()}" +
@@ -90,14 +96,22 @@ class MainActivity : AppCompatActivity() {
 
         prayersActivityBinding.setAlarm.setOnClickListener{
             prayersActivityBinding.setAlarm.setImageResource(R.drawable.ic_box_checked)
+            PrayersSP=applicationContext.getSharedPreferences("PrayersApp", MODE_PRIVATE)
+            val edit=PrayersSP.edit()
+            edit.putBoolean(Constants.setPrayerAlarmChecked,true)
 
             //setAlarm()
             //setTime()
             saveTime=SaveTime(applicationContext)
-            saveTime.setAlarmForAllPrayers()
+            saveTime.getAllDataFromRoom()
+        }
+        prayersActivityBinding.titleRefresh.setOnClickListener {
+            getCurrentLocationFun()
+            vm.getPrayers(this,vm.theCurrentYear.value!!,vm.theCurrentMonth.value!!,
+            PrayersSP.getString(Constants.latitude,"0.0")!!.toDouble(),
+            PrayersSP.getString(Constants.latitude,"0.0")!!.toDouble())
         }
 
-        PrayersSP= applicationContext.getSharedPreferences("PrayersApp", MODE_PRIVATE)
         sharedPreferencesTime=PrayersSP.getString("CurrentDate","")
         val theDayweAreIN=PrayersSP.getString("currentDAY","")
 
