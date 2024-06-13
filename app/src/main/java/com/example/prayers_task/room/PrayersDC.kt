@@ -27,4 +27,6 @@ data class PrayersDC(
     val maghrib: String? = null,
     @ColumnInfo
     val isha: String? = null,
+    @ColumnInfo(name = "prayer_day")
+    val day: Int? = null,
     )

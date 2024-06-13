@@ -20,7 +20,7 @@ class MyBroadcastReciever :BroadcastReceiver() {
         else if(intent!!.action.equals("android.intent.action.BOOT_COMPLETED")){
             //set time
             val saveTime=SaveTime(context!!)
-            saveTime.setAlarmForAllPrayers()
+            saveTime.getAllDataFromRoom()
         }
 
 

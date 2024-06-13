@@ -100,7 +100,9 @@ class PrayersScreenViewModel :ViewModel() {
                         dhuhr =it?.timings?.dhuhr ,
                         asr =it?.timings?.asr ,
                         maghrib =it?.timings?.maghrib ,
-                        isha = it?.timings?.isha)
+                        isha = it?.timings?.isha,
+                        day = it.date.gregorian.day?.toInt()
+                    )
                     AppLocalPrayersDB.getDB(context).prayersDAO().addPrayerDataItem(dc)
                 }
                 Log.e("roomlength","${AppLocalPrayersDB.getDB(context).prayersDAO().getAllMonthPrayers().size}")
@@ -189,7 +191,7 @@ class PrayersScreenViewModel :ViewModel() {
             if(it.date?.equals(timeSP)!!){
                 Log.e("inRoom","found it")
 
-                val datte= Date(gregorian = Gregorian(date = it.date))
+                val datte= Date(gregorian = Gregorian(date = it.date, day = it.day.toString()))
                 val timmings= Timings(sunset =it.sunset , sunrise = it.sunrise,
                     fajr =it.fajr , dhuhr = it.dhuhr , asr = it.asr,
                     maghrib = it.maghrib, isha = it.isha)
@@ -235,6 +237,8 @@ class PrayersScreenViewModel :ViewModel() {
         Log.e("currentDate","${theCurrentYear.value}")
         Log.e("currentDate","${theCurrentMonth.value}")
     }
+
+
 
 
 
