@@ -13,6 +13,7 @@ class Constants{
         val longitude="longitude"
         val latitude="latitude"
         val setPrayerAlarmChecked="setPrayerAlarmChecked"
+        val uniqueCode="uniqueCode"
     }
 
 }

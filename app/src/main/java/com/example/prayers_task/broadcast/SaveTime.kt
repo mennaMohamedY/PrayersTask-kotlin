@@ -26,24 +26,7 @@ class SaveTime {
 
     }
 
-//    fun saveData(hour:Int,minutes:Int){
-//        var editor=PrayersSP!!.edit()
-//        editor.putInt("Hour",hour)
-//        editor.putInt("Minute",minutes)
-//        editor.commit()
-//    }
-//
-//    fun getHour():Int{
-//        return  PrayersSP!!.getInt("Hour",0)
-//    }
-//    fun getMin():Int{
-//        return  PrayersSP!!.getInt("Minute",0)
-//    }
-
     fun setAlarm(month:Int,dayOfMonth:Int,hour:Int,minutes: Int,uniqueReqCode:Int){
-//        var hour=getHour()
-//        var minutes=getMin()
-
         //the next two lines says i want you to set the hour of the day with the hour and minutes
         // i will send it to you
         val calendar=Calendar.getInstance()
@@ -57,6 +40,7 @@ class SaveTime {
 
         val intent=Intent(context,MyBroadcastReciever::class.java)
         intent.putExtra("message","Prayer Time Alarm")
+        intent.putExtra(Constants.uniqueCode,uniqueReqCode)
         intent.action="com.tester.alarmmanager"
         //PendingIntent.FLAG_UPDATE_CURRENT
         val pendingInt=PendingIntent.getBroadcast(context,uniqueReqCode,intent,
@@ -77,18 +61,7 @@ class SaveTime {
         val arr=prayer.split("-")
         return arr[1]
     }
-    //to get the hours and minutes from this format "04:11"
-//    fun getDetailedPrayerTime(prayerName:String){
-//      val n= PrayersSP?.getString(prayerName,"")
-//
-//
-//        val fullTime=getTheTimingOnlyFromTxt(n!!)
-//        val m=fullTime?.split(":")
-//        hourPart=m?.get(0)!!.toInt()
-//        minutesPart=m?.get(1)!!.toInt()
-//        println("FullTime->${fullTime}: hourPart->${hourPart}: minutesPart:${minutesPart}")
-//        Toast.makeText(context, "time is set  FullTime->${fullTime}: hourPart->${hourPart}: minutesPart:${minutesPart}", Toast.LENGTH_SHORT).show()
-//    }
+
     fun getDetailedPrayerTime(prayerName:String){
 
         val m=prayerName?.split(":")
@@ -97,13 +70,7 @@ class SaveTime {
         println("FullTime->${fullTime}: hourPart->${hourPart}: minutesPart:${minutesPart}")
         Toast.makeText(context, "time is set  FullTime->${fullTime}: hourPart->${hourPart}: minutesPart:${minutesPart}", Toast.LENGTH_SHORT).show()
     }
-    val prayersNameList= arrayListOf<String>(
-        Constants.fajrPrayer,
-        Constants.dhuhrPrayer,
-        Constants.asrPrayer,
-        Constants.maghribPrayer,
-        Constants.ishaPrayer
-    )
+
     fun getAllDataFromRoom(){
         val prayT=PrayersSP?.getString("CurrentDate","")
         val tempHolder=prayT?.split("-")
@@ -132,10 +99,4 @@ class SaveTime {
         }
     }
 
-//    fun setAlarmForAllPrayers(){
-//        for (i in 0..4){
-//            getDetailedPrayerTime(prayersNameList[i])
-//            setAlarm(hour = hourPart, minutes = minutesPart,)
-//        }
-//    }
 }

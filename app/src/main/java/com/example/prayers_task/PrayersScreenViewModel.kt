@@ -19,7 +19,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.prayers_task.api.ApiManager
-import com.example.prayers_task.connectivity.NetworkConnectivityObserverImpl
 import com.example.prayers_task.model.*
 import com.example.prayers_task.room.AppLocalPrayersDB
 import com.example.prayers_task.room.PrayersDC
@@ -41,6 +40,8 @@ class PrayersScreenViewModel :ViewModel() {
     val theCurrentDate=MutableLiveData<String>()
 
     var isCurrentLocationGranted=MutableLiveData<Boolean>(false)
+    var isCheckChecked=MutableLiveData<Boolean>(false)
+    var imgResID=MutableLiveData<Int>(R.drawable.ic_check_box)
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getPrayers(context: Context,year:Int,month:Int,latitude:Double,longitude:Double){
@@ -112,6 +113,20 @@ class PrayersScreenViewModel :ViewModel() {
                 errorMsg.value=e.localizedMessage.toString()
             }
         }
+    }
+    fun checkCheckedMark(context: Context){
+        val sp=context.getSharedPreferences(Constants.sharedPrefName, AppCompatActivity.MODE_PRIVATE)
+        val checked=sp.getBoolean(Constants.setPrayerAlarmChecked,false)
+        val n:Int
+        isCheckChecked.value=checked
+        if(isCheckChecked.value!!){
+            n= R.drawable.ic_box_checked
+        }else{
+             n= R.drawable.ic_check_box
+        }
+        imgResID.value=n
+
+
     }
 
     fun isNetworkAvailable(appContext: Context):Boolean {
