@@ -17,8 +17,8 @@ import com.example.prayers_task.R
 
 class Notifications {
     @RequiresApi(Build.VERSION_CODES.O)
-    fun makeNotification(context: Context){
-        val channelID="CHANNEL_ID_PRAYERS"
+    fun makeNotification(context: Context,uniqueCode:Int){
+        val channelID="CHANNEL_ID_PRAYERS ${uniqueCode}"
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             val channel: NotificationChannel = NotificationChannel(
@@ -39,7 +39,7 @@ class Notifications {
         val intent= Intent(context,MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
-        val pendingint= PendingIntent.getActivity(context,0
+        val pendingint= PendingIntent.getActivity(context,uniqueCode
             ,intent, PendingIntent.FLAG_MUTABLE)
 
         notfBuilder.setContentIntent(pendingint)

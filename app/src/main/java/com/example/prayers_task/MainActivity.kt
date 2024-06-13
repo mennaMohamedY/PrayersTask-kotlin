@@ -41,12 +41,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var vm:PrayersScreenViewModel
     lateinit var prayersAdapter:PrayersAdapter
 
-
-    lateinit var picker:MaterialTimePicker
-    lateinit var calendar:Calendar
-    //lateinit var picker:
-    var hour:Int=0
-    var minutes:Int=0
     val channelID="CHANNEL_ID_PRAYERS"
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -73,37 +67,29 @@ class MainActivity : AppCompatActivity() {
         prayersActivityBinding.spinner.adapter=ArrayAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,spinnerList)
 
         vm.getCurrentDate()
-        //to get notification at prayerTimes
-        createNotification()
-        PrayersSP= applicationContext.getSharedPreferences("PrayersApp", MODE_PRIVATE)
-        val checked=PrayersSP.getBoolean(Constants.setPrayerAlarmChecked,false)
-        if(checked){
-            prayersActivityBinding.setAlarm.setImageResource(R.drawable.ic_box_checked)
-        }
-
-
+//        //to get notification at prayerTimes
+//        createNotification()
+        PrayersSP= applicationContext.getSharedPreferences(Constants.sharedPrefName, MODE_PRIVATE)
         saveTime=SaveTime(applicationContext)
-//        Toast.makeText(this, "Saved time in sharedPreferences ${saveTime.getHour()}" +
-//                ":${saveTime.getMin()}", Toast.LENGTH_SHORT).show()
 
-//        prayersActivityBinding.setAlarmForPrayersTxt.setOnClickListener{
-//           //chose clock to set Alarm
-//            showTimePicker()
-//        }
 
         //location
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         prayersActivityBinding.setAlarm.setOnClickListener{
-            prayersActivityBinding.setAlarm.setImageResource(R.drawable.ic_box_checked)
+            saveTime=SaveTime(applicationContext)
+            createNotification()
+
+
+            if(ContextCompat.checkSelfPermission(this,
+                    android.Manifest.permission.POST_NOTIFICATIONS) ==
+                PackageManager.PERMISSION_GRANTED){
+                prayersActivityBinding.setAlarm.setImageResource(R.drawable.ic_box_checked)
+
+            }
             PrayersSP=applicationContext.getSharedPreferences("PrayersApp", MODE_PRIVATE)
             val edit=PrayersSP.edit()
             edit.putBoolean(Constants.setPrayerAlarmChecked,true)
-
-            //setAlarm()
-            //setTime()
-            saveTime=SaveTime(applicationContext)
-            saveTime.getAllDataFromRoom()
         }
         prayersActivityBinding.titleRefresh.setOnClickListener {
             getCurrentLocationFun()
@@ -139,21 +125,12 @@ class MainActivity : AppCompatActivity() {
             }
             onTryAgainClickListener()
         }else{
-            println("late ${PrayersSP.getString(Constants.latitude, "0.0")!!.toDouble()}")
-            println("long ${PrayersSP.getString(Constants.longitude, "0.0")!!.toDouble()}")
-            Log.e("location","late ${PrayersSP.getString(Constants.latitude, "0.0")!!.toDouble()}")
-            Log.e("location","late ${PrayersSP.getString(Constants.longitude, "0.0")!!.toDouble()}")
-
-            Toast.makeText(this, "long:${ PrayersSP.getString(Constants.latitude,"0.0")!!.toDouble()}" +
-                    "late ${ PrayersSP.getString(Constants.latitude,"0.0")!!.toDouble()}", Toast.LENGTH_SHORT).show()
-
             //get the data from room db
             //we need to pass the current day
             vm.showDataFromRoomDB( this,vm.theCurrentDate.value!!)
             subscribeToLiveData()
         }
     }
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun subscribeToLiveData(){
@@ -179,14 +156,12 @@ class MainActivity : AppCompatActivity() {
                 prayersActivityBinding.errorTxt.visibility=View.INVISIBLE
                 prayersActivityBinding.tryAgainBtn.visibility=View.INVISIBLE
                 prayersActivityBinding.circularProgressIndicator.visibility=View.INVISIBLE
-
             }
             else{
                 prayersActivityBinding.errorTxt.text=vm.errorMsg.value
                 prayersActivityBinding.errorTxt.visibility=View.VISIBLE
                 prayersActivityBinding.tryAgainBtn.visibility=View.VISIBLE
                 prayersActivityBinding.circularProgressIndicator.visibility=View.INVISIBLE
-
             }
         }
     }
@@ -250,56 +225,17 @@ class MainActivity : AppCompatActivity() {
 
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            val channel: NotificationChannel = NotificationChannel(
-                channelID,"my channel", NotificationManager.IMPORTANCE_DEFAULT)
 
-            val manager: NotificationManager =getSystemService(NotificationManager::class.java)
-            manager.createNotificationChannel(channel)
+            if(ContextCompat.checkSelfPermission(this,
+                    android.Manifest.permission.POST_NOTIFICATIONS) ==
+                PackageManager.PERMISSION_GRANTED){
+                saveTime.getAllDataFromRoom()
+
+            }
         }
 
         val notificationCompat= NotificationManagerCompat.from(this)
     }
-
-//    fun showTimePicker() {
-//
-//        picker= MaterialTimePicker.Builder()
-//            .setTimeFormat(TimeFormat.CLOCK_24H)
-//            .setHour(23)
-//            .setMinute(0)
-//            .setTitleText("select Time")
-//            .build()
-//
-//        picker.show(supportFragmentManager,"PrayersReminder")
-//        picker.addOnPositiveButtonClickListener {
-//            hour=picker.hour
-//            minutes=picker.minute
-//            if(picker.hour>12){
-//                String.format("%02d",picker.hour - 12) + ":" + String.format("%02d",picker.minute) +"PM"
-//
-//                hour=picker.hour
-//                minutes=picker.minute
-//                Toast.makeText(this, "time selected->${picker.hour}", Toast.LENGTH_SHORT).show()
-//            }
-//            else{
-//                String.format("%02d",picker.hour) + ":" + String.format("%02d",picker.minute) +"AM"
-//                Toast.makeText(this, "time selected->${picker.hour}", Toast.LENGTH_SHORT).show()
-//            }
-//            calendar= Calendar.getInstance()
-//            calendar[Calendar.HOUR_OF_DAY]= picker.hour
-//            calendar[Calendar.MINUTE]= picker.minute
-//            calendar[Calendar.SECOND]= 0
-//            calendar[Calendar.MILLISECOND]= 0
-//        }
-//    }
-
-//    fun setTime(){
-//
-//        //Toast.makeText(this, "time is set to ${hour}:${min}", Toast.LENGTH_SHORT).show()
-//        saveTime=SaveTime(applicationContext)
-//        //supposed that the data is already saved from getPrayer and getDataFromRoom functiona
-//        //saveTime.saveData(hour,min)
-//        saveTime.setAlarmForAllPrayers()
-//    }
 
     //start of location part
     private fun getCurrentLocationFun() {
@@ -347,24 +283,10 @@ class MainActivity : AppCompatActivity() {
         ) { isGranted: Boolean ->
             if (isGranted) {
                 getCurrentLocation()
-
             } else {
                  showDialog()
-//                requestPermission()
             }
         }
-
-//    fun requestPermission(){
-//        if(shouldShowRequestPermissionRationale(android.Manifest.permission.ACCESS_FINE_LOCATION)){
-//            //show explanation to the user why i need to access his location
-//            showDialog()
-//
-//        }else{
-//            requestPermissionLauncher.launch(
-//                android.Manifest.permission.ACCESS_FINE_LOCATION)
-//        }
-//    }
-
 
     fun showDialog(){
         val alertDialog= AlertDialog.Builder(this)
