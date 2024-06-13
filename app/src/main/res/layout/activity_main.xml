@@ -32,26 +32,43 @@
                 style="@style/whiteTxtStyle"
                 />
         </com.google.android.material.appbar.AppBarLayout>
-        <TextView
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/appBarLayout"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginVertical="22dp"
             android:layout_marginHorizontal="22dp"
+            android:id="@+id/alarmContainer"
             android:background="#F8F5EF"
             android:paddingVertical="12dp"
-            android:text="التنبيه بصوت الاذان عند كل صلاه"
-            style="@style/blackTxtStyle"
-            android:drawableRight="@drawable/ic_add_alert"
-            android:drawableLeft="@drawable/ic_check_box"
-            android:paddingHorizontal="12dp"
-            android:id="@+id/setAlarmForPrayers"
-            />
+
+            >
+
+            <TextView
+                android:id="@+id/setAlarmForPrayersTxt"
+                style="@style/blackTxtStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/ic_add_alert"
+                android:paddingHorizontal="2dp"
+                android:text="التنبيه بصوت الاذان عند كل صلاه"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/setAlarm"
+                app:layout_constraintTop_toTopOf="parent" />
+            <ImageButton
+                android:id="@+id/setAlarm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_check_box"
+                app:layout_constraintEnd_toStartOf="@id/setAlarmForPrayersTxt"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
       <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/setAlarmForPrayers"
+            app:layout_constraintTop_toBottomOf="@id/alarmContainer"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginVertical="22dp"
             android:layout_marginHorizontal="22dp"
@@ -119,6 +136,32 @@
             android:visibility="visible"
             android:id="@+id/circularProgressIndicator"
             />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/innerconstraintlayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_margin="22dp"
+            android:id="@+id/errorTxt"
+            android:textColor="@color/red"
+            android:textSize="16sp"
+            android:visibility="invisible"
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/errorTxt"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:backgroundTint="@color/teal_700"
+            android:text=" اعاده المحاوله !"
+            android:layout_marginTop="32dp"
+            android:visibility="invisible"
+            android:textSize="22sp"
+            android:id="@+id/tryAgainBtn"/>
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

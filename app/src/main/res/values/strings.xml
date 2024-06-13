@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Prayers_Task</string>
+    <string name="wifi_connection">Wifi Not Connected Please Turn it on and try Again!</string>
+    <string name="gps_connection">Please turn on the GPS From Settings to get The Prayers Times</string>
 </resources>

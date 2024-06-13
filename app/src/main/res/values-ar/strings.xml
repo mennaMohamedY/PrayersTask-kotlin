@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">مواقيت الصلاه</string>
+    <string name="wifi_connection">الانترنت غير متصل برجاء الاتصال به واعاده المحالوله </string>
+    <string name="gps_connection">برجاء فتح ال gps من الاعدادات واعاده المحاوله مره اخري</string>
+
+</resources>

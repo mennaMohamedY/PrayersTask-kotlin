@@ -1,4 +1,4 @@
-package com.example.prayers_task.adater
+package com.example.prayers_task.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
