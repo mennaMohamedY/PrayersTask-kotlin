@@ -32,6 +32,8 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 
 
@@ -40,8 +42,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var prayersActivityBinding:ActivityMainBinding
     lateinit var vm:PrayersScreenViewModel
     lateinit var prayersAdapter:PrayersAdapter
-
-    val channelID="CHANNEL_ID_PRAYERS"
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     var latitude:Double=0.0
@@ -67,30 +67,38 @@ class MainActivity : AppCompatActivity() {
         prayersActivityBinding.spinner.adapter=ArrayAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,spinnerList)
 
         vm.getCurrentDate()
-//        //to get notification at prayerTimes
-//        createNotification()
+        prayersActivityBinding.vm=vm
         PrayersSP= applicationContext.getSharedPreferences(Constants.sharedPrefName, MODE_PRIVATE)
         saveTime=SaveTime(applicationContext)
+        val editt=PrayersSP.edit()
 
+        //if the setPrayersAlarm is checked before then set the checked icon
+        if(PrayersSP.getBoolean(Constants.setPrayerAlarmChecked,false)){
+            prayersActivityBinding.setAlarm.setImageResource(R.drawable.ic_box_checked)
+           vm.imgResID.setValue(R.drawable.ic_box_checked)
+            prayersActivityBinding.invalidateAll()
+        }
 
         //location
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         prayersActivityBinding.setAlarm.setOnClickListener{
-            saveTime=SaveTime(applicationContext)
+            editt.putBoolean(Constants.setPrayerAlarmChecked,true)
+            //save the date we checked the set alarm mark in sharedPreferences
+            val formatter= DateTimeFormatter.ofPattern("dd-MM-yyyy")
+            val daySetAlarmChecked= LocalDateTime.now().format(formatter)
+            editt.putString("dateSetAlarmIsChecked",daySetAlarmChecked)
+            editt.commit()
+
             createNotification()
-
-
             if(ContextCompat.checkSelfPermission(this,
                     android.Manifest.permission.POST_NOTIFICATIONS) ==
                 PackageManager.PERMISSION_GRANTED){
                 prayersActivityBinding.setAlarm.setImageResource(R.drawable.ic_box_checked)
-
             }
-            PrayersSP=applicationContext.getSharedPreferences("PrayersApp", MODE_PRIVATE)
-            val edit=PrayersSP.edit()
-            edit.putBoolean(Constants.setPrayerAlarmChecked,true)
+
         }
+
         prayersActivityBinding.titleRefresh.setOnClickListener {
             getCurrentLocationFun()
             vm.getPrayers(this,vm.theCurrentYear.value!!,vm.theCurrentMonth.value!!,
@@ -111,6 +119,7 @@ class MainActivity : AppCompatActivity() {
         //to get the data from api
 
         if (sharedPreferencesTime.isNullOrEmpty()){
+
             getCurrentLocationFun()
             Toast.makeText(this, "long:${ PrayersSP.getString(Constants.latitude,"0.0")!!.toDouble()}" +
                     "late ${ PrayersSP.getString(Constants.latitude,"0.0")!!.toDouble()}", Toast.LENGTH_SHORT).show()
@@ -118,6 +127,7 @@ class MainActivity : AppCompatActivity() {
             vm.getPrayers( this,vm.theCurrentYear.value!!,vm.theCurrentMonth.value!!,
                 PrayersSP.getString(Constants.latitude,"0.0")!!.toDouble(),
                 PrayersSP.getString(Constants.latitude,"0.0")!!.toDouble())
+
             subscribeToLiveData()
             observeOnConntectivity()
             if(!vm.locationErrorMsg.value.isNullOrEmpty()){
@@ -135,6 +145,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    ///end onCreate
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun subscribeToLiveData(){
         vm.dataItm.observe(this){
@@ -149,6 +161,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
     //to handle ui if there is no internet connection and we need to get data from api
     fun observeOnConntectivity(){
         vm.errorMsg.observe(this){
@@ -196,12 +209,17 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     fun onTryAgainClickListener(){
         prayersActivityBinding.tryAgainBtn.setOnClickListener {
-            if(!vm.locationErrorMsg.value.isNullOrEmpty()){
-                getCurrentLocationFun()
-            }
+           vm.showLoading.setValue(true)
+
             vm.getPrayers(this,vm.theCurrentYear.value!!,vm.theCurrentMonth.value!!,
                 PrayersSP.getString(Constants.latitude,"0.0")!!.toDouble(),
                 PrayersSP.getString(Constants.latitude,"0.0")!!.toDouble())
+            if(!vm.locationErrorMsg.value.isNullOrEmpty()){
+                getCurrentLocationFun()
+            }
+            if(vm.isInternetConnected.value==true && vm.isCurrentLocationGranted.value==true){
+                subscribeToLiveData()
+            }
         }
     }
 
@@ -241,11 +259,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     //start of location part
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun getCurrentLocationFun() {
         if(ActivityCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED){
             //if yes then we need to check on the gps whether its turned on or off
             if(isGPSPermissionGranted()){
                 getCurrentLocation()
+                vm.getPrayers(this,vm.theCurrentYear.value!!,vm.theCurrentMonth.value!!,
+                    PrayersSP.getString(Constants.latitude,"0.0")!!.toDouble(),
+                    PrayersSP.getString(Constants.latitude,"0.0")!!.toDouble())
+
             }else{
                 requestPermissionLauncher.launch(
                     android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -278,6 +301,7 @@ class MainActivity : AppCompatActivity() {
             editSP.putString(Constants.longitude,longtitude.toString())
             editSP.commit()
         }
+
     }
 
     val requestPermissionLauncher =

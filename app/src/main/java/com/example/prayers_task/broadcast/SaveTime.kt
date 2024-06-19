@@ -52,6 +52,7 @@ class SaveTime {
             AlarmManager.RTC_WAKEUP,calendar.timeInMillis,
         pendingInt)
     }
+
     //the time is returned in the next format "04:11 (EEST)" and i only need the time part
     fun getTheTimingOnlyFromTxt(prayer:String):String{
         val arr=prayer.split(" ")
@@ -72,10 +73,12 @@ class SaveTime {
     }
 
     fun getAllDataFromRoom(){
-        val prayT=PrayersSP?.getString("CurrentDate","")
+        //get the date we checked on the setPrayersAlarm
+        val prayT=PrayersSP?.getString("dateSetAlarmIsChecked","")
         val tempHolder=prayT?.split("-")
         val prayTDay=tempHolder?.get(0)?.toInt()
 
+        //then filter the data saved in room from the day we checked till the end of the month
         val monthPrayersData= AppLocalPrayersDB.getDB(context!!).prayersDAO().getPrayersFromCurrentDateTillMonthEnd(prayTDay!!)
         monthPrayersData.forEach {
             val prayMonth=getMonth(it.date!!)

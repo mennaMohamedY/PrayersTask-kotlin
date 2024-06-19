@@ -20,9 +20,6 @@ interface PrayersRoomDAO {
     @Query("SELECT * FROM prayersPerMonth WHERE prayer_day >= :currentDay")
     fun getPrayersFromCurrentDateTillMonthEnd(currentDay:Int):List<PrayersDC>
 
-
 }
 
-//@Query("SELECT * FROM prayersPerMonth WHERE date IN (:date)")
-//fun loadCurrentDayPrayers(date: String): PrayersDC
 
