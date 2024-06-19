@@ -62,6 +62,7 @@ class PrayersScreenViewModel :ViewModel() {
                     return@launch
                 }else{
                     isCurrentLocationGranted.value=true
+
                 }
                 val response=ApiManager.getAPIServices().getAllMonthPrayers(year,month,latitude,longitude)
 
@@ -114,7 +115,7 @@ class PrayersScreenViewModel :ViewModel() {
             }
         }
     }
-    fun checkCheckedMark(context: Context){
+    fun checkCheckedMark2(context: Context){
         val sp=context.getSharedPreferences(Constants.sharedPrefName, AppCompatActivity.MODE_PRIVATE)
         val checked=sp.getBoolean(Constants.setPrayerAlarmChecked,false)
         val n:Int

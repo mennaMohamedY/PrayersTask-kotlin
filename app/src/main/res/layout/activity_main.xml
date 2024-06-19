@@ -7,6 +7,7 @@
         <variable
             name="vm"
             type="com.example.prayers_task.PrayersScreenViewModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -66,7 +67,7 @@
                 android:id="@+id/setAlarm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_check_box"
+                setImgSrc="@{vm.imgResID}"
                 app:layout_constraintEnd_toStartOf="@id/setAlarmForPrayersTxt"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
