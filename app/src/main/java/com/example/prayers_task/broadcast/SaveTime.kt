@@ -58,13 +58,16 @@ class SaveTime {
         val arr=prayer.split(" ")
         return arr[0]
     }
+
+    //the date is returned in the next format "dd-MM-yyyy" so to get the month part
+
     fun getMonth(prayer:String):String{
         val arr=prayer.split("-")
         return arr[1]
     }
 
+    // to get the hours and minutes from the next format "04:11"
     fun getDetailedPrayerTime(prayerName:String){
-
         val m=prayerName?.split(":")
         hourPart=m?.get(0)!!.toInt()
         minutesPart=m?.get(1)!!.toInt()
@@ -83,6 +86,7 @@ class SaveTime {
         monthPrayersData.forEach {
             val prayMonth=getMonth(it.date!!)
 
+            //ex: 04:11
             var prayer0=getTheTimingOnlyFromTxt(it.fajr!!)
             var prayer1=getTheTimingOnlyFromTxt(it.dhuhr!!)
             var prayer2=getTheTimingOnlyFromTxt(it.asr!!)
@@ -92,7 +96,9 @@ class SaveTime {
                 prayer0,prayer1,prayer2,prayer3,prayer4
             )
             for (i in 0..4){
+                //ex: hourPart=04, minutesPart11
                 getDetailedPrayerTime(prayersList[i])
+                //ex for fajr uniqueCode= 6022 for duhr=6122
                 var uniqueReqCode="${prayMonth}${i}${it.day}".toInt()
                 setAlarm(hour = hourPart, minutes = minutesPart, month = prayMonth.toInt(), uniqueReqCode =uniqueReqCode ,
                     dayOfMonth = it.day!!

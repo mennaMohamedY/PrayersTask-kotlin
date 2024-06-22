@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
@@ -51,6 +52,7 @@ class MainActivity : AppCompatActivity() {
     var sharedPreferencesTime:String?=null
     lateinit var spinnerList:List<String>
     lateinit var saveTime:SaveTime
+    var flag=0
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -96,7 +98,6 @@ class MainActivity : AppCompatActivity() {
                 PackageManager.PERMISSION_GRANTED){
                 prayersActivityBinding.setAlarm.setImageResource(R.drawable.ic_box_checked)
             }
-
         }
 
         prayersActivityBinding.titleRefresh.setOnClickListener {
@@ -107,7 +108,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         sharedPreferencesTime=PrayersSP.getString("CurrentDate","")
-        val theDayweAreIN=PrayersSP.getString("currentDAY","")
+//        val theDayweAreIN=PrayersSP.getString("currentDAY","")
 
         //if there is date daved in shared preferences go and check if it's
         //current month date or not if yes continue if not set it to null
@@ -183,23 +184,23 @@ class MainActivity : AppCompatActivity() {
     }
     //to handle ui if the gps is turned off from the settings but permission is granted
     fun observeOnGPS(){
-        vm.errorMsg.observe(this){
-            prayersActivityBinding.errorTxt.text=it
-        }
+//        vm.errorMsg.observe(this){
+//            prayersActivityBinding.errorTxt.text=it
+//        }
 
         //don't forget we need to handle the function try again for the gps
         vm.isCurrentLocationGranted.observe(this){
+            prayersActivityBinding.circularProgressIndicator.visibility=View.INVISIBLE
+
             if(it){
                 prayersActivityBinding.errorTxt.visibility=View.INVISIBLE
                 prayersActivityBinding.tryAgainBtn.visibility=View.INVISIBLE
-                prayersActivityBinding.circularProgressIndicator.visibility=View.INVISIBLE
 
             }
             else{
                 prayersActivityBinding.errorTxt.text=vm.locationErrorMsg.value
                 prayersActivityBinding.errorTxt.visibility=View.VISIBLE
                 prayersActivityBinding.tryAgainBtn.visibility=View.VISIBLE
-                prayersActivityBinding.circularProgressIndicator.visibility=View.INVISIBLE
 
             }
         }
@@ -263,21 +264,28 @@ class MainActivity : AppCompatActivity() {
     private fun getCurrentLocationFun() {
         if(ActivityCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED){
             //if yes then we need to check on the gps whether its turned on or off
+            flag=1
             if(isGPSPermissionGranted()){
                 getCurrentLocation()
                 vm.getPrayers(this,vm.theCurrentYear.value!!,vm.theCurrentMonth.value!!,
                     PrayersSP.getString(Constants.latitude,"0.0")!!.toDouble(),
                     PrayersSP.getString(Constants.latitude,"0.0")!!.toDouble())
 
+                Log.e("inGPSGranted","yes GPSGranted")
+                subscribeToLiveData()
             }else{
+                Log.e("inGPSGranted2","no GPSNotGranted")
+
                 requestPermissionLauncher.launch(
                     android.Manifest.permission.ACCESS_FINE_LOCATION)
             }
         }else{
             //if permission is not granted ask for the permission
+            vm.showLoading.setValue(true)
+            subscribeToLiveData()
             requestPermissionLauncher.launch(
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
-            // requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),1)
+
         }
     }
 
@@ -286,6 +294,7 @@ class MainActivity : AppCompatActivity() {
         checkSelfPermission(this,android.Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingPermission")
     fun getCurrentLocation(){
         val currentLocationBuilder= CurrentLocationRequest.Builder()
@@ -300,31 +309,61 @@ class MainActivity : AppCompatActivity() {
              editSP.putString(Constants.latitude,latitude.toString())
             editSP.putString(Constants.longitude,longtitude.toString())
             editSP.commit()
-        }
 
+            ///
+            vm.getPrayers(this,vm.theCurrentYear.value!!,vm.theCurrentMonth.value!!,
+                latitude,
+                longtitude)
+            subscribeToLiveData()
+            ///
+        }
     }
 
+
+    @RequiresApi(Build.VERSION_CODES.O)
     val requestPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
+                Log.e("reqPermission","granted")
                 getCurrentLocation()
+
             } else {
-                 showDialog()
+                // showDialog()
+                requestPermission()
             }
         }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun requestPermission(){
+        if(shouldShowRequestPermissionRationale(android.Manifest.permission.ACCESS_FINE_LOCATION)){
+            //show explanation to the user why i need to access his location
+            showDialog()
+
+        }else{
+            requestPermissionLauncher.launch(
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+    }
+
     fun showDialog(){
         val alertDialog= AlertDialog.Builder(this)
-        alertDialog.setMessage("We Need To Access Your Location in order to get the Exact Prayers Time" +
-                "if you didn't enable the location permission you will get the prayers Time of Alexandria,Egypt ")
+//        alertDialog.setMessage("We Need To Access Your Location in order to get the Exact Prayers Time" +
+//                "if you didn't enable the location permission you will get the prayers Time of Alexandria,Egypt ")
+
+        alertDialog.setMessage("التطبيق بحاجه الي تحديد الموقع الحالي لتحدبد مواقيت الصلاه المناظره لموقعك" +
+                "اذا لم يتم السماح بتجديد الموقع لن يعمل التطبيق ")
         alertDialog.setPositiveButton("Accept",object : DialogInterface.OnClickListener{
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun onClick(dialog: DialogInterface?, p1: Int) {
                 //show the permission again
                 requestPermissionLauncher.launch(
                     android.Manifest.permission.ACCESS_FINE_LOCATION)
+
                 dialog?.dismiss()
+
+
             }
         })
         alertDialog.setNegativeButton("Cancel",object : DialogInterface.OnClickListener{

@@ -62,7 +62,6 @@ class PrayersScreenViewModel :ViewModel() {
                     return@launch
                 }else{
                     isCurrentLocationGranted.value=true
-
                 }
                 val response=ApiManager.getAPIServices().getAllMonthPrayers(year,month,latitude,longitude)
 
@@ -126,8 +125,6 @@ class PrayersScreenViewModel :ViewModel() {
              n= R.drawable.ic_check_box
         }
         imgResID.value=n
-
-
     }
 
     fun isNetworkAvailable(appContext: Context):Boolean {
@@ -166,13 +163,13 @@ class PrayersScreenViewModel :ViewModel() {
         if(savedMonth==currentMonth){
             //here i just need to update the current day date so that i can get the
             //data from room of the current date i am in
-            val sharedpref=context.getSharedPreferences("PrayersApp", AppCompatActivity.MODE_PRIVATE)
-
-            val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
-            currentDate.value = LocalDateTime.now().format(formatter)
-            val editor:SharedPreferences.Editor =sharedpref.edit()
-            editor.putString("currentDAY",currentDate.value)
-            editor.commit()
+//            val sharedpref=context.getSharedPreferences("PrayersApp", AppCompatActivity.MODE_PRIVATE)
+//
+//            val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+//            currentDate.value = LocalDateTime.now().format(formatter)
+//            val editor:SharedPreferences.Editor =sharedpref.edit()
+//            editor.putString("currentDAY",currentDate.value)
+//            editor.commit()
 
             return
         }else{

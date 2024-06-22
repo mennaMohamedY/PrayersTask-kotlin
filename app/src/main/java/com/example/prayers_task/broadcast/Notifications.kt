@@ -18,7 +18,7 @@ import com.example.prayers_task.R
 class Notifications {
     @RequiresApi(Build.VERSION_CODES.O)
     fun makeNotification(context: Context,uniqueCode:Int){
-        val channelID="CHANNEL_ID_PRAYERS ${uniqueCode}"
+        val channelID="CHANNEL_ID_PRAYERS_${uniqueCode}"
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             val channel: NotificationChannel = NotificationChannel(
